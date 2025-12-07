@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Driver {
+  id            Int      @id @default(autoincrement())
+  name          String
+  phone         String   @unique
+  email         String?  @unique
+  licenseNumber String   @unique
+  status        String   @default("active")
+  devices       Device[]
+  zones         Zone[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Device {
+  id        Int      @id @default(autoincrement())
+  name      String
+  imei      String   @unique
+  model     String?
+  status    String   @default("active")
+  driverId  Int?
+  driver    Driver?  @relation(fields: [driverId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Zone {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String
+  city      String
+  zipCode   String?
+  status    String   @default("active")
+  driverId  Int?
+  driver    Driver?  @relation(fields: [driverId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
